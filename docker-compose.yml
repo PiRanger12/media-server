@@ -1,0 +1,58 @@
+name: media-server
+
+services:
+  # ── Videos: películas, series, videos personales ──────────────────────
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    user: "${PUID}:${PGID}"
+    ports:
+      - "8096:8096"
+    volumes:
+      - ./data/jellyfin/config:/config
+      - ./data/jellyfin/cache:/cache
+      - ${MEDIA_ROOT}/videos:/media/videos:ro
+    environment:
+      - TZ=${TZ}
+    # Aceleración por hardware (Intel/AMD). Descomenta si tu equipo tiene GPU integrada:
+    # devices:
+    #   - /dev/dri:/dev/dri
+    restart: unless-stopped
+
+  # ── Música ────────────────────────────────────────────────────────────
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    user: "${PUID}:${PGID}"
+    ports:
+      - "4533:4533"
+    volumes:
+      - ./data/navidrome:/data
+      - ${MEDIA_ROOT}/music:/music:ro
+    environment:
+      - TZ=${TZ}
+      - ND_SCANNER_SCHEDULE=@every 30m
+      - ND_LOGLEVEL=info
+      - ND_DEFAULTLANGUAGE=es
+    restart: unless-stopped
+
+  # ── Panel de administración propio (FastAPI) ─────────────────────────
+  panel:
+    build: ./panel
+    container_name: media-panel
+    user: "${PUID}:${PGID}"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ${MEDIA_ROOT}:/media
+      - ./data/panel:/data
+    env_file: .env
+    environment:
+      - MEDIA_DIR=/media
+      - DATA_DIR=/data
+      - JELLYFIN_URL=http://jellyfin:8096
+      - NAVIDROME_URL=http://navidrome:4533
+    depends_on:
+      - jellyfin
+      - navidrome
+    restart: unless-stopped

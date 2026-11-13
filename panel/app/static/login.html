@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Media Panel · Entrar</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="login">
+    <form id="f" class="form">
+      <h1>🎬 Media Panel</h1>
+      <label>Contraseña
+        <input type="password" id="pw" autocomplete="current-password" autofocus required>
+      </label>
+      <div class="error" id="err"></div>
+      <button class="btn primary" type="submit">Entrar</button>
+    </form>
+  </div>
+  <script>
+    document.getElementById("f").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const err = document.getElementById("err");
+      err.textContent = "";
+      const r = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: document.getElementById("pw").value }),
+      });
+      if (r.ok) location.href = "/";
+      else err.textContent = (await r.json()).detail || "Error";
+    });
+  </script>
+</body>
+</html>

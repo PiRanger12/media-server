@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Media Panel</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand">🎬 <span>Media Panel</span></div>
+    <nav>
+      <button data-lib="videos" class="active">🎞️ Videos</button>
+      <button data-lib="music">🎵 Música</button>
+    </nav>
+    <div class="services" id="services"></div>
+    <div class="disk" id="disk"></div>
+    <button class="btn" id="logout">Cerrar sesión</button>
+  </aside>
+
+  <main>
+    <div class="toolbar">
+      <div class="crumbs" id="crumbs"></div>
+      <input class="search" id="search" placeholder="Filtrar en esta carpeta…">
+      <button class="btn" id="btn-folder">＋ Carpeta</button>
+      <button class="btn" id="btn-scan">⟳ Escanear</button>
+      <button class="btn primary" id="btn-upload">⬆ Subir</button>
+      <input type="file" id="file-input" multiple hidden>
+    </div>
+
+    <div class="uploads" id="uploads"></div>
+
+    <div class="drop" id="drop">
+      <table>
+        <thead><tr>
+          <th>Nombre</th><th class="hide-sm">Tamaño</th><th class="hide-sm">Modificado</th><th></th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div class="empty" id="empty" hidden>Esta carpeta está vacía. Arrastra archivos aquí para subirlos.</div>
+    </div>
+  </main>
+</div>
+
+<dialog id="dlg"></dialog>
+<div id="toasts"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
